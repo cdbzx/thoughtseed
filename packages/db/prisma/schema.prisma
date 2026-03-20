@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Idea {
+  id         String         @id @default(cuid())
+  content    String
+  sourceType String         @default("text")
+  tags       String         @default("")
+  favorite   Boolean        @default(false)
+  status     String         @default("new")
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  expansion  IdeaExpansion?
+  toolRuns   ToolRun[]
+}
+
+model IdeaExpansion {
+  id        String   @id @default(cuid())
+  title     String
+  summary   String
+  problem   String
+  audience  String
+  value     String
+  nextSteps String
+  ideaId    String   @unique
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model ToolRun {
+  id             String   @id @default(cuid())
+  ideaId          String
+  toolId          String
+  toolName        String
+  taskType        String   @default("exploration")
+  taskSummary     String
+  inputSummary    String
+  resultSummary   String
+  status          String   @default("success")
+  usefulnessScore Int?
+  learnedRule     String?
+  feedback        String?
+  feedbackNote    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  idea            Idea     @relation(fields: [ideaId], references: [id])
+}
+
+model ToolPreference {
+  id          String   @id @default(cuid())
+  toolId       String
+  toolName     String
+  taskType     String   @default("global")
+  preference   Int      @default(0)
+  lastSignal   String?
+  signalCount  Int      @default(0)
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  @@unique([toolId, taskType])
+}

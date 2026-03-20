@@ -1,0 +1,18 @@
+{
+  "name": "thoughtseed",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace @thoughtseed/web run dev",
+    "dev:api": "npm --workspace @thoughtseed/api run dev",
+    "build:web": "npm --workspace @thoughtseed/web run build",
+    "build:api": "npm --workspace @thoughtseed/api run build",
+    "build": "npm run build:web && npm run build:api",
+    "db:generate": "npx prisma generate --schema packages/db/prisma/schema.prisma",
+    "db:migrate": "npx prisma migrate dev --schema packages/db/prisma/schema.prisma"
+  }
+}
